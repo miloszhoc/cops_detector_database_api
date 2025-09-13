@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  cops_detector_api:
+    build: ./api
+    container_name: cops_detector_api
+    ports:
+      - "8003:8003"
+    environment:
+      - WEBSITE_USERNAME=${WEBSITE_USERNAME}
+      - WEBSITE_PASSWORD=${WEBSITE_PASSWORD}
+      - DATABASE_NAME=${POSTGRES_DB}
+      - TABLE_NAME=${TABLE_NAME}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@cops_detector_database:5432/${POSTGRES_DB}
+    depends_on:
+      - cops_detector_database
+
+  cops_detector_database:
+    image: postgres:15
+    container_name: cops_detector_database
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5444:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
