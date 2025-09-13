@@ -46,7 +46,7 @@ def checker(licenseplate: str, _verification=Depends(verification)):
     if _verification:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM cars WHERE current_plate_number = %s LIMIT 1;",
+        cur.execute("SELECT * FROM cars WHERE current_plate_number=%s LIMIT 1;",
                     (licenseplate,))
         row = cur.fetchone()
         cur.close()
