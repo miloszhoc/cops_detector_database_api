@@ -1,6 +1,7 @@
 import os
 
 import psycopg2
+import psycopg2.extras
 from fastapi import FastAPI
 
 import secrets
@@ -20,7 +21,8 @@ app = FastAPI(dependencies=[Depends(security)])
 
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return conn
 
 
 def verification(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
@@ -44,23 +46,24 @@ def checker(licenseplate: str, _verification=Depends(verification)):
     if _verification:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute(f"SELECT * FROM {TABLE_NAME} WHERE id = 1 LIMIT 1;")
+        cur.execute("SELECT * FROM cars WHERE current_plate_number = %s LIMIT 1;",
+                    (licenseplate,))
         row = cur.fetchone()
-
+        cur.close()
+        conn.close()
         if not row:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail={'found': 'nok', 'error': 'plate number not found'})
         else:
-            return {'found': 'ok', 'plate_number': licenseplate, 'data': row}
-
-        # plates = ['DW123', 'DWL432']
-        # if licenseplate in plates:
-        #     return {'found': 'ok', 'plate_number': licenseplate,
-        #             'details': {'vehicle_color': 'black', 'voivodeship': 'Dolnoslaskie', 'roads': ['S3', 'A1']}}
-        # else:
-        #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-        #                         detail={'found': 'nok', 'error': 'number not found'})
-        cur.close()
-        conn.close()
+            return {
+                "found": "ok",
+                "plate_number": row["current_plate_number"],
+                "details": {
+                    "vehicle_color": row["vehicle_color"],
+                    "s3_picture": row["img_s3_path"],
+                    "voivodeship": row["voivodeship"],
+                    "roads": row["roads"]
+                }
+            }
     else:
         return {'Error': 'User Not Authorized'}
