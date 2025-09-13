@@ -8,8 +8,11 @@ CREATE TABLE IF NOT EXISTS cars (
     old_plate_number TEXT,
     vehicle_color TEXT,
     voivodeship TEXT,
+    city TEXT,
     roads JSONB,
-    llm_extracted JSONB
+    llm_extracted JSONB,
+    car_info TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO cars (
@@ -21,8 +24,10 @@ INSERT INTO cars (
     old_plate_number,
     vehicle_color,
     voivodeship,
+    city,
     roads,
-    llm_extracted
+    llm_extracted,
+    car_info
 ) VALUES (
     'test-image',
     'http://example.com/car.jpg',
@@ -32,6 +37,8 @@ INSERT INTO cars (
     'XYZ98765',
     'Red',
     'Mazowieckie',
+    'Warszawa',
     '["A2", "S8"]',
-    '{"status": "processed", "tags": ["car", "test"]}'
+    '{"status": "processed", "tags": ["car", "test"]}',
+    'Toyota Corolla 2020'
 );

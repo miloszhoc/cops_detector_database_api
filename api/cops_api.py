@@ -62,7 +62,12 @@ def checker(licenseplate: str, _verification=Depends(verification)):
                     "vehicle_color": row["vehicle_color"],
                     "s3_picture": row["img_s3_path"],
                     "voivodeship": row["voivodeship"],
-                    "roads": row["roads"]
+                    "roads": row["roads"],
+                    "description": row["description"],
+                    "old_plate_number": row["old_plate_number"],
+                    "city": row["city"],
+                    "car_info": row["car_info"],
+                    "llm_extracted": row["llm_extracted"]
                 }
             }
     else:
