@@ -66,6 +66,7 @@ def checker(licenseplate: str, _verification=Depends(verification)):
                     "description": row["description"],
                     "old_plate_number": row["old_plate_number"],
                     "city": row["city"],
+                    "source": row["source"],
                     "car_info": row["car_info"],
                     "llm_extracted": row["llm_extracted"]
                 }

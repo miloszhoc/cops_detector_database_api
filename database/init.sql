@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS cars (
     vehicle_color TEXT,
     voivodeship TEXT,
     city TEXT,
+    source TEXT,
     roads JSONB,
     llm_extracted JSONB,
     car_info TEXT,
@@ -25,6 +26,7 @@ INSERT INTO cars (
     vehicle_color,
     voivodeship,
     city,
+    source,
     roads,
     llm_extracted,
     car_info
@@ -38,6 +40,7 @@ INSERT INTO cars (
     'Red',
     'Mazowieckie',
     'Warszawa',
+    'camera1',
     '["A2", "S8"]',
     '{"status": "processed", "tags": ["car", "test"]}',
     'Toyota Corolla 2020'
