@@ -50,9 +50,9 @@ def checker(licenseplate: str, _verification=Depends(verification)):
     if _verification:
         conn = get_connection()
         cur = conn.cursor()
-        LOGGER.info("Executing SQL query: SELECT * FROM cars WHERE current_plate_number=%s LIMIT 1;" % licenseplate)
-        cur.execute("SELECT * FROM cars WHERE current_plate_number=%s LIMIT 1;",
-                    (licenseplate,))
+        LOGGER.info("Executing SQL query: SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 1;" % licenseplate)
+        cur.execute("SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 1;",
+                    (f"%{licenseplate}%",))
         row = cur.fetchone()
         cur.close()
         conn.close()
