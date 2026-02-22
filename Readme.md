@@ -11,6 +11,7 @@
 2. Run command:
 - `sudo docker compose up -d`
 
-(Optionally)
+(Optionally)   
+
 3. Set up a cron job to create and upload DB backup to S3.
    - run `database/cron/add_cron.sh`.
