@@ -57,26 +57,28 @@ def checker(licenseplate: str, _verification=Depends(verification)):
             "Executing SQL query: SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 100;" % licenseplate)
         cur.execute("SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 100;",
                     (f"%{licenseplate}%",))
-        row = cur.fetchone()
+        rows = cur.fetchall()
         cur.close()
         conn.close()
-        if not row:
+
+        if not rows:
             LOGGER.info(f'404 ERROR, Plate number {licenseplate} not found')
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail={'found': 'nok', 'error': 'plate number not found'})
         else:
             car_data = {"found": "ok",
-                        "plate_number": row["current_plate_number"],
-                        "details": {"vehicle_color": row["vehicle_color"],
-                                    "s3_picture": row["img_s3_path"],
-                                    "voivodeship": row["voivodeship"],
-                                    "roads": row["roads"],
-                                    "description": row["description"],
-                                    "old_plate_number": row["old_plate_number"],
-                                    "city": row["city"],
-                                    "source": row["source"],
-                                    "car_info": row["car_info"],
-                                    "llm_extracted": row["llm_extracted"]}}
+                        "results": [{"plate_number": r["current_plate_number"],
+                                     "details": {
+                                         "vehicle_color": r["vehicle_color"],
+                                         "s3_picture": r["img_s3_path"],
+                                         "voivodeship": r["voivodeship"],
+                                         "roads": r["roads"],
+                                         "description": r["description"],
+                                         "old_plate_number": r["old_plate_number"],
+                                         "city": r["city"],
+                                         "source": r["source"],
+                                         "car_info": r["car_info"],
+                                         "llm_extracted": r["llm_extracted"]}} for r in rows]}
             LOGGER.info(f'CAR DATA: {car_data}')
             return car_data
     else:
