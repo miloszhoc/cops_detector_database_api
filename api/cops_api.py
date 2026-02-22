@@ -1,16 +1,19 @@
 import os
-
+import logging
+import time
 import psycopg2
 import psycopg2.extras
 from fastapi import FastAPI
-
 import secrets
 from typing import Annotated
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from utils.logs import LOGGER
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[logging.FileHandler(f"vehicle_ingestion_{str(int(time.time()))}.log"), logging.StreamHandler()])
+LOGGER = logging.getLogger(__name__)
 
 USERNAME = os.environ['WEBSITE_USERNAME'].encode('utf-8')
 PASSWORD = os.environ['WEBSITE_PASSWORD'].encode('utf-8')
@@ -50,8 +53,9 @@ def checker(licenseplate: str, _verification=Depends(verification)):
     if _verification:
         conn = get_connection()
         cur = conn.cursor()
-        LOGGER.info("Executing SQL query: SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 1;" % licenseplate)
-        cur.execute("SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 1;",
+        LOGGER.info(
+            "Executing SQL query: SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 100;" % licenseplate)
+        cur.execute("SELECT * FROM cars WHERE current_plate_number LIKE %s LIMIT 100;",
                     (f"%{licenseplate}%",))
         row = cur.fetchone()
         cur.close()
