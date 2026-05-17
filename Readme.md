@@ -16,3 +16,8 @@
 
 3. Set up a cron job to create and upload DB backup to S3.
    - run `database/cron/add_cron.sh`.
+
+
+To restore the dump:
+docker exec -it <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+docker exec -i <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> < "<BACKUP_PATH>"
