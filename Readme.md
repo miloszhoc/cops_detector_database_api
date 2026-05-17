@@ -18,6 +18,6 @@
    - run `database/cron/add_cron.sh`.
 
 
-To restore the dump:
-docker exec -it <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-docker exec -i <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> < "<BACKUP_PATH>"
+To restore the dump:   
+- `docker exec -it <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"`
+- `docker exec -i <CONTAINER_NAME> psql -U <DB_USER> -d <DB_NAME> < "<BACKUP_PATH>"`
